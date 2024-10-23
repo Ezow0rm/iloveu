@@ -106,7 +106,7 @@
 
         .message {
             text-align: center;
-            font-size: 32px;
+            font-size: 28px;
             color: #ff69b4;
             opacity: 0;
             visibility: hidden;
@@ -115,7 +115,8 @@
             align-items: center;
             word-wrap: break-word;
             width: 90%;
-            max-width: 600px;
+            max-width: 400px;
+            overflow-wrap: break-word;
         }
 
         .message.visible {
@@ -127,7 +128,7 @@
             font-size: 24px;
             color: #ff69b4;
             margin-top: 20px;
-            white-space: nowrap;
+            white-space: pre-wrap;
             overflow: hidden;
             border-right: 3px solid #ff69b4;
             animation: typing 4s steps(40, end) forwards, blinkCursor 0.75s step-end infinite;
@@ -258,4 +259,16 @@
                     russianMessage.style.animation = 'typing 4s steps(40, end) forwards, blinkCursor 0.75s step-end infinite';
                 }, 4500);
             }, 2000);
-       
+        }
+
+        document.getElementById('heart').addEventListener('click', handleHeartClick);
+
+        // Показываем сердечко после загрузки
+        window.addEventListener('DOMContentLoaded', function() {
+            const heart = document.getElementById('heart');
+            heart.style.display = 'block';
+        });
+    </script>
+
+</body>
+</html>
