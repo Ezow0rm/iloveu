@@ -197,6 +197,82 @@
             margin: 20px auto; /* Отступы сверху и снизу, выравнивание по центру */
             transition: width 6s ease-in-out; /* Плавное появление в течение времени */
         }
+            .progress-bar-container {
+            position: relative;
+            width: 80%;
+            height: 25px;
+            background-color: rgba(128, 128, 128, 0.15);
+            margin: 30px auto;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            position: absolute;
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff69b4, #ff8bbd);
+            border-radius: 12px;
+            transition: width 0.1s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            line-height: 25px;
+            font-size: 18px;
+            color: #ff69b4;
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        .divider {
+            width: 0%; /* Начальная ширина разделителя */
+            height: 1px; /* Тонкий разделитель */
+            background-color: rgba(128, 128, 128, 0.5); /* Полупрозрачный серый цвет */
+            margin: 20px auto; /* Отступы сверху и снизу, выравнивание по центру */
+            transition: width 6s ease-in-out; /* Плавное появление в течение времени */
+        }
+
+        .animated-separator {
+            opacity: 0;
+            animation: fadeInSeparator 2s ease-in-out forwards;
+        }
+
+        @keyframes fadeInSeparator {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-5px);
+            }
+            50% {
+                transform: translateX(5px);
+            }
+            75% {
+                transform: translateX(-5px);
+            }
+        }
+
+        @keyframes scaleUp {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1.1);
+            }
+        }
     </style>
 </head>
 <body>
@@ -207,15 +283,19 @@
         <div class="heart" id="heart"></div>
     </div>
     <div class="message" id="message">
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+            <p class="progress-text" id="progressText">30% love</p>
+        </div>
         <div class="arrow"></div>
-        <p class="typewriter fade-in-text" id="englishMessage"></p>
+        <p class="typewriter fade-in-text" id="englishMessage">I love you endlessly, my dear</p>
 <div class="divider"></div>
-        <p class="typewriter fade-in-text animated-text" id="russianMessage"></p>
+        <p class="typewriter fade-in-text animated-text" id="russianMessage" style="visibility: hidden; opacity: 0;">я люблю тебя бесконечно, моя дорогая</p>
         <p class="date fade-in-text" style="font-size: 16px; color: #999; border: 1px solid #999; padding: 5px; display: inline-block;">08.07.21</p>
     </div>
 
     <script>
-        
+        // Создание маленьких сердечек после исчезновения большого сердца
         function createMiniHearts(count) {
             for (let i = 0; i < count; i++) {
                 const miniHeart = document.createElement('div');
@@ -233,7 +313,7 @@
             }
         }
 
-        
+        // Эффект набора текста с хаотичным появлением символов и дополнительными анимациями
         function typeTextWithEffects(element, text, intervalRange) {
             let displayedText = Array(text.length).fill('_');
             let indices = Array.from(Array(text.length).keys());
@@ -241,7 +321,7 @@
 
             function updateText() {
                 if (currentIndex >= text.length) {
-                element.style.color = '#ff69b4'; 
+                element.style.color = '#ff69b4'; // Возвращаем цвет текста к единому оттенку в конце
                 return;
                 }
                 let randomIndex = Math.floor(Math.random() * indices.length);
@@ -261,7 +341,7 @@
             updateText();
         }
 
-        
+        // Эффект растворения сердца и появления сообщения
         function handleHeartClick() {
             const heart = document.getElementById('heart');
             const message = document.getElementById('message');
@@ -275,28 +355,63 @@
             arrow.style.display = 'none';
             setTimeout(function() {
                 heart.style.display = 'none';
-                createMiniHearts(50); 
-
+                createMiniHearts(50);
                 setTimeout(() => {
                     message.classList.add('visible');
-                    typeTextWithEffects(englishMessage, 'I love you endlessly, my dear', [50, 150]);
+                    updateProgressBar();
+                    typeTextWithEffects(englishMessage, 'I love you endlessly, my dear', [100, 200]);
                     setTimeout(() => {
-                        typeTextWithEffects(russianMessage, 'я люблю тебя бесконечно, моя дорогая', [50, 150]);
                         document.querySelector('.divider').style.width = '80%';
-                    }, 3700);
+                        setTimeout(() => {
+                            russianMessage.style.visibility = 'visible';
+                            russianMessage.style.transition = 'opacity 1s ease-in-out';
+                            russianMessage.style.opacity = '1';
+                            russianMessage.style.visibility = 'visible';
+                            russianMessage.style.transition = 'opacity 1s ease-in-out';
+                            russianMessage.style.opacity = '1';
+                            typeTextWithEffects(russianMessage, 'я люблю тебя бесконечно, моя дорогая', [100, 200]);
+                        }, 1500);
+                    }, 4000);
                 }, 1500);
             }, 2000);
+                    
+                
         }
 
         document.getElementById('heart').addEventListener('click', handleHeartClick);
         document.getElementById('heart').addEventListener('touchstart', handleHeartClick);
 
-        
+        // Показываем сердечко после загрузки
         window.addEventListener('DOMContentLoaded', function() {
             const heart = document.getElementById('heart');
             heart.style.display = 'block';
         });
     </script>
+<script>
+        function updateProgressBar() {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            let progress = 0;
+            let maxProgress = 100;
+            const totalSteps = englishMessage.textContent.length + russianMessage.textContent.length;
+            let stepCount = 0;
 
+            function increaseProgress() {
+                if (progress >= maxProgress) {
+                    progressText.innerText = 'ВОТ 100% любви';
+                    progressBar.style.animation = 'shake 0.5s ease-in-out infinite, scaleUp 1s ease-in-out forwards';
+                    return;
+                }
+                progress += maxProgress / totalSteps;
+                stepCount++;
+                progressBar.style.width = Math.min(progress, 100) + '%';
+                progressText.innerText = Math.round(Math.min(progress, 100)) + '% love';
+                setTimeout(increaseProgress, 100);
+            }
+
+            increaseProgress();
+            
+        }
+    </script>
 </body>
 </html>
