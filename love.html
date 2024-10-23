@@ -39,6 +39,7 @@
             animation: pulse 1.5s infinite;
             box-shadow: 0 0 20px rgba(255, 107, 129, 0.6);
             cursor: pointer;
+            z-index: 10;
         }
 
         .heart::before, .heart::after {
@@ -65,6 +66,7 @@
             color: #ff69b4;
             margin-bottom: 10px;
             animation: fadeIn 3s ease-in-out;
+            z-index: 10;
         }
 
         .arrow {
@@ -75,6 +77,7 @@
             background-size: contain;
             transform: rotate(-30deg);
             animation: bounce 2s infinite;
+            z-index: 10;
         }
 
         @keyframes bounce {
@@ -119,6 +122,7 @@
             width: 90%;
             max-width: 400px;
             overflow-wrap: break-word;
+            z-index: 5;
         }
 
         .message.visible {
@@ -145,86 +149,53 @@
             }
         }
 
-        .stars {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: white;
-            box-shadow: 0px 0px 10px #fff;
-            animation: twinkle 2s infinite alternate;
-            border-radius: 50%;
-        }
-
-        @keyframes twinkle {
-            from {
-                opacity: 0.2;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        .date {
-            font-size: 16px;
-            color: #999;
-            margin-top: 10px;
-        }
-
-        /* Добавление красивой анимации для текста, появляющегося после исчезновения сердца */
-        @keyframes fadeInText {
-            0% {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-            100% {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .fade-in-text {
-            animation: fadeInText 2s ease-in-out forwards;
-        }
-
-        /* Добавление анимации маленьких сердечек после исчезновения большого сердца */
         .mini-heart {
             position: absolute;
-            width: 20px;
-            height: 20px;
-            background: linear-gradient(45deg, #ff6b81, #ffb6c1);
+            width: 15px;
+            height: 15px;
+            background: linear-gradient(45deg, #ff4f72, #ffa3b4);
             transform: rotate(-45deg);
             border-radius: 50%;
             animation: miniHeartMovement 3s ease-in-out forwards;
+            box-shadow: 0px 0px 10px rgba(255, 79, 114, 0.6);
+            z-index: 1;
         }
 
         .mini-heart::before, .mini-heart::after {
             content: "";
             position: absolute;
-            width: 20px;
-            height: 20px;
+            width: 15px;
+            height: 15px;
             border-radius: 50%;
             background: inherit;
         }
 
         .mini-heart::before {
-            top: -10px;
+            top: -7.5px;
             left: 0;
         }
 
         .mini-heart::after {
             top: 0;
-            left: 10px;
+            left: 7.5px;
         }
 
         @keyframes miniHeartMovement {
             0% {
-                transform: translateY(0) rotate(-45deg) scale(1);
+                transform: translate(0, 0) rotate(-45deg) scale(1);
                 opacity: 1;
             }
             100% {
-                transform: translateY(-150px) rotate(-45deg) scale(0.5);
+                transform: translate(calc(-100px + 200px * var(--randX)), calc(-100px + 200px * var(--randY))) rotate(-45deg) scale(0.5);
                 opacity: 0;
             }
+        }
+    .divider {
+            width: 0%; /* Начальная ширина разделителя */
+            height: 1px; /* Тонкий разделитель */
+            background-color: rgba(128, 128, 128, 0.5); /* Полупрозрачный серый цвет */
+            margin: 20px auto; /* Отступы сверху и снизу, выравнивание по центру */
+            transition: width 6s ease-in-out; /* Плавное появление в течение времени */
         }
     </style>
 </head>
@@ -238,42 +209,94 @@
     <div class="message" id="message">
         <div class="arrow"></div>
         <p class="typewriter fade-in-text" id="englishMessage"></p>
-        <p class="typewriter fade-in-text" id="russianMessage"></p>
-        <p class="date fade-in-text">08.07.21</p>
+<div class="divider"></div>
+        <p class="typewriter fade-in-text animated-text" id="russianMessage"></p>
+        <p class="date fade-in-text" style="font-size: 16px; color: #999; border: 1px solid #999; padding: 5px; display: inline-block;">08.07.21</p>
     </div>
 
     <script>
-        // Создание эффекта звездочек на фоне с использованием пула для оптимизации
-        const starPool = [];
-        function createStar() {
-            let star;
-            if (starPool.length > 0) {
-                star = starPool.pop();
-                star.style.display = 'block';
-            } else {
-                star = document.createElement('div');
-                star.classList.add('stars');
-                document.body.appendChild(star);
-            }
-            star.style.top = `${Math.random() * window.innerHeight}px`;
-            star.style.left = `${Math.random() * window.innerWidth}px`;
-            star.style.animationDuration = `${(Math.random() * (4 - 2) + 2).toFixed(1)}s`;
-        }
-
-        function recycleStar(star) {
-            star.style.display = 'none';
-            starPool.push(star);
-        }
-
-        setInterval(() => {
-            if (document.querySelectorAll('.stars').length < 50) {
-                createStar();
-            }
-        }, 100);
-
-        // Создание маленьких сердечек после исчезновения сердца
+        
         function createMiniHearts(count) {
             for (let i = 0; i < count; i++) {
                 const miniHeart = document.createElement('div');
                 miniHeart.classList.add('mini-heart');
-                miniHeart.style.top = `${
+                miniHeart.style.setProperty('--randX', Math.random().toFixed(2));
+                miniHeart.style.setProperty('--randY', Math.random().toFixed(2));
+                miniHeart.style.top = `${window.innerHeight / 2 + Math.random() * 100 - 50}px`;
+                miniHeart.style.left = `${window.innerWidth / 2 + Math.random() * 100 - 50}px`;
+                miniHeart.style.animationDelay = `${Math.random()}s`;
+                document.body.appendChild(miniHeart);
+
+                setTimeout(() => {
+                    miniHeart.remove();
+                }, 2000);
+            }
+        }
+
+        
+        function typeTextWithEffects(element, text, intervalRange) {
+            let displayedText = Array(text.length).fill('_');
+            let indices = Array.from(Array(text.length).keys());
+            let currentIndex = 0;
+
+            function updateText() {
+                if (currentIndex >= text.length) {
+                element.style.color = '#ff69b4'; 
+                return;
+                }
+                let randomIndex = Math.floor(Math.random() * indices.length);
+                let selected = indices.splice(randomIndex, 1)[0];
+                displayedText[selected] = text[selected];
+                element.innerText = displayedText.join('');
+                element.style.transition = 'transform 0.2s ease, color 0.5s';
+                element.style.transform = 'translateY(-10px)';
+                element.style.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
+                setTimeout(() => {
+                    element.style.transform = 'translateY(0)';
+                }, 200);
+                currentIndex++;
+                setTimeout(updateText, Math.random() * (intervalRange[1] - intervalRange[0]) + intervalRange[0]);
+            }
+
+            updateText();
+        }
+
+        
+        function handleHeartClick() {
+            const heart = document.getElementById('heart');
+            const message = document.getElementById('message');
+            const englishMessage = document.getElementById('englishMessage');
+            const russianMessage = document.getElementById('russianMessage');
+            const clickMeText = document.getElementById('clickMeText');
+            const arrow = document.getElementById('arrow');
+
+            heart.style.animation = 'dissolve 2s forwards';
+            clickMeText.style.display = 'none';
+            arrow.style.display = 'none';
+            setTimeout(function() {
+                heart.style.display = 'none';
+                createMiniHearts(50); 
+
+                setTimeout(() => {
+                    message.classList.add('visible');
+                    typeTextWithEffects(englishMessage, 'I love you endlessly, my dear', [50, 150]);
+                    setTimeout(() => {
+                        typeTextWithEffects(russianMessage, 'я люблю тебя бесконечно, моя дорогая', [50, 150]);
+                        document.querySelector('.divider').style.width = '80%';
+                    }, 3700);
+                }, 1500);
+            }, 2000);
+        }
+
+        document.getElementById('heart').addEventListener('click', handleHeartClick);
+        document.getElementById('heart').addEventListener('touchstart', handleHeartClick);
+
+        
+        window.addEventListener('DOMContentLoaded', function() {
+            const heart = document.getElementById('heart');
+            heart.style.display = 'block';
+        });
+    </script>
+
+</body>
+</html>
