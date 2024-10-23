@@ -131,7 +131,7 @@
             white-space: pre-wrap;
             overflow: hidden;
             border-right: 3px solid #ff69b4;
-            animation: typing 4s steps(40, end) forwards, blinkCursor 0.75s step-end infinite;
+            animation: typing 6s steps(50, end) forwards, blinkCursor 0.75s step-end infinite;
         }
 
         @keyframes typing {
@@ -200,7 +200,7 @@
             height: 4px;
             background: rgba(255, 223, 186, 0.8);
             border-radius: 50%;
-            animation: dustMovement 2s ease-in-out forwards;
+            animation: dustMovement 3s ease-in-out forwards;
         }
 
         @keyframes dustMovement {
@@ -209,7 +209,7 @@
                 opacity: 1;
             }
             100% {
-                transform: scale(0.5) translateY(-50px);
+                transform: scale(0.5) translateY(-100px);
                 opacity: 0;
             }
         }
@@ -270,7 +270,7 @@
 
                 setTimeout(() => {
                     particle.remove();
-                }, 2000);
+                }, 3000);
             }
         }
 
@@ -280,4 +280,35 @@
             const message = document.getElementById('message');
             const englishMessage = document.getElementById('englishMessage');
             const russianMessage = document.getElementById('russianMessage');
-            const clickMeText = document.getElementBy
+            const clickMeText = document.getElementById('clickMeText');
+            const arrow = document.getElementById('arrow');
+
+            heart.style.animation = 'dissolve 2s forwards';
+            clickMeText.style.display = 'none';
+            arrow.style.display = 'none';
+            setTimeout(function() {
+                heart.style.display = 'none';
+                createDustParticles(50); // Создаем пыльцу после исчезновения сердца
+                setTimeout(() => {
+                    message.classList.add('visible');
+                    englishMessage.innerText = 'I love you endlessly, my dear';
+                    englishMessage.style.animation = 'typing 6s steps(50, end) forwards, blinkCursor 0.75s step-end infinite';
+                    setTimeout(() => {
+                        russianMessage.innerText = 'я люблю тебя бесконечно, моя дорогая';
+                        russianMessage.style.animation = 'typing 6s steps(50, end) forwards, blinkCursor 0.75s step-end infinite';
+                    }, 6500);
+                }, 1500);
+            }, 2000);
+        }
+
+        document.getElementById('heart').addEventListener('click', handleHeartClick);
+
+        // Показываем сердечко после загрузки
+        window.addEventListener('DOMContentLoaded', function() {
+            const heart = document.getElementById('heart');
+            heart.style.display = 'block';
+        });
+    </script>
+
+</body>
+</html>
