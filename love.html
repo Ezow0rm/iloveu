@@ -113,6 +113,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            word-wrap: break-word;
+            width: 90%;
+            max-width: 600px;
         }
 
         .message.visible {
@@ -255,16 +258,4 @@
                     russianMessage.style.animation = 'typing 4s steps(40, end) forwards, blinkCursor 0.75s step-end infinite';
                 }, 4500);
             }, 2000);
-        }
-
-        document.getElementById('heart').addEventListener('click', handleHeartClick);
-
-        // Показываем сердечко после загрузки
-        window.addEventListener('DOMContentLoaded', function() {
-            const heart = document.getElementById('heart');
-            heart.style.display = 'block';
-        });
-    </script>
-
-</body>
-</html>
+       
