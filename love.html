@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beautiful Heart Animation</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ffd1dc, #ffe4e9);
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+        }
+
+        .heart-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .heart {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            transform: rotate(-45deg);
+            background: linear-gradient(45deg, #ff6b81, #ffb6c1);
+            animation: pulse 1.5s infinite;
+            box-shadow: 0 0 20px rgba(255, 107, 129, 0.6);
+        }
+
+        .heart::before, .heart::after {
+            content: "";
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: inherit;
+            position: absolute;
+        }
+
+        .heart::before {
+            top: -60px;
+            left: 0;
+        }
+
+        .heart::after {
+            left: 60px;
+            top: 0;
+        }
+
+        .click-me {
+            font-size: 20px;
+            color: #ff69b4;
+            margin-bottom: 10px;
+            animation: fadeIn 3s ease-in-out;
+        }
+
+        .arrow {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+            background: url('https://cdn-icons-png.flaticon.com/512/545/545681.png') no-repeat center;
+            background-size: contain;
+            transform: rotate(-30deg);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0) rotate(-30deg);
+            }
+            50% {
+                transform: translateY(-10px) rotate(-30deg);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1) rotate(-45deg);
+            }
+            50% {
+                transform: scale(1.1) rotate(-45deg);
+            }
+        }
+
+        @keyframes dissolve {
+            0% {
+                transform: scale(1) rotate(-45deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.5) rotate(-45deg);
+                opacity: 0;
+            }
+        }
+
+        .message {
+            text-align: center;
+            font-size: 32px;
+            color: #ff69b4;
+            opacity: 0;
+            visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .message.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .typewriter {
+            font-size: 24px;
+            color: #ff69b4;
+            margin-top: 20px;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 3px solid #ff69b4;
+            animation: typing 4s steps(40, end) forwards, blinkCursor 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+
+        @keyframes blinkCursor {
+            0%, 100% {
+                border-color: transparent;
+            }
+            50% {
+                border-color: #ff69b4;
+            }
+        }
+
+        .stars {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            box-shadow: 0px 0px 10px #fff;
+            animation: twinkle 2s infinite alternate;
+            border-radius: 50%;
+        }
+
+        @keyframes twinkle {
+            from {
+                opacity: 0.2;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .date {
+            font-size: 16px;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        /* Добавление красивой анимации для текста, появляющегося после исчезновения сердца */
+        @keyframes fadeInText {
+            0% {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .fade-in-text {
+            animation: fadeInText 2s ease-in-out forwards;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="heart-container">
+        <div class="click-me" id="clickMeText">Click me</div>
+        <div class="arrow" id="arrow"></div>
+        <div class="heart" id="heart"></div>
+    </div>
+    <div class="message" id="message">
+        <div class="arrow"></div>
+        <p class="typewriter fade-in-text" id="englishMessage"></p>
+        <p class="typewriter fade-in-text" id="russianMessage"></p>
+        <p class="date fade-in-text">08.07.21</p>
+    </div>
+
+    <script>
+        // Создание эффекта звездочек на фоне с использованием пула для оптимизации
+        const starPool = [];
+        function createStar() {
+            let star;
+            if (starPool.length > 0) {
+                star = starPool.pop();
+                star.style.display = 'block';
+            } else {
+                star = document.createElement('div');
+                star.classList.add('stars');
+                document.body.appendChild(star);
+            }
+            star.style.top = `${Math.random() * window.innerHeight}px`;
+            star.style.left = `${Math.random() * window.innerWidth}px`;
+            star.style.animationDuration = `${(Math.random() * (4 - 2) + 2).toFixed(1)}s`;
+        }
+
+        function recycleStar(star) {
+            star.style.display = 'none';
+            starPool.push(star);
+        }
+
+        setInterval(() => {
+            if (document.querySelectorAll('.stars').length < 50) {
+                createStar();
+            }
+        }, 100);
+
+        // Эффект растворения сердца и появления сообщения
+        function handleHeartClick() {
+            const heart = document.getElementById('heart');
+            const message = document.getElementById('message');
+            const englishMessage = document.getElementById('englishMessage');
+            const russianMessage = document.getElementById('russianMessage');
+            const clickMeText = document.getElementById('clickMeText');
+            const arrow = document.getElementById('arrow');
+
+            heart.style.animation = 'dissolve 2s forwards';
+            clickMeText.style.display = 'none';
+            arrow.style.display = 'none';
+            setTimeout(function() {
+                heart.style.display = 'none';
+                message.classList.add('visible');
+                englishMessage.innerText = 'I love you endlessly, my dear';
+                englishMessage.style.animation = 'typing 4s steps(40, end) forwards, blinkCursor 0.75s step-end infinite';
+                setTimeout(() => {
+                    russianMessage.innerText = 'я люблю тебя бесконечно, моя дорогая';
+                    russianMessage.style.animation = 'typing 4s steps(40, end) forwards, blinkCursor 0.75s step-end infinite';
+                }, 4500);
+            }, 2000);
+        }
+
+        document.getElementById('heart').addEventListener('click', handleHeartClick);
+
+        // Показываем сердечко после загрузки
+        window.addEventListener('DOMContentLoaded', function() {
+            const heart = document.getElementById('heart');
+            heart.style.display = 'block';
+        });
+    </script>
+
+</body>
+</html>
