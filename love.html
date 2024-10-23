@@ -133,16 +133,7 @@
             white-space: pre-wrap;
             overflow: hidden;
             border-right: 3px solid #ff69b4;
-            animation: typing 6s steps(50, end) forwards, blinkCursor 0.75s step-end infinite;
-        }
-
-        @keyframes typing {
-            from {
-                width: 0;
-            }
-            to {
-                width: 100%;
-            }
+            animation: blinkCursor 0.75s step-end infinite;
         }
 
         @keyframes blinkCursor {
@@ -195,23 +186,43 @@
             animation: fadeInText 2s ease-in-out forwards;
         }
 
-        /* Добавление анимации пыльцы после исчезновения сердца */
-        .dust-particle {
+        /* Добавление анимации маленьких сердечек после исчезновения большого сердца */
+        .mini-heart {
             position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(255, 223, 186, 0.8);
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(45deg, #ff6b81, #ffb6c1);
+            transform: rotate(-45deg);
             border-radius: 50%;
-            animation: dustMovement 3s ease-in-out forwards;
+            animation: miniHeartMovement 3s ease-in-out forwards;
         }
 
-        @keyframes dustMovement {
+        .mini-heart::before, .mini-heart::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: inherit;
+        }
+
+        .mini-heart::before {
+            top: -10px;
+            left: 0;
+        }
+
+        .mini-heart::after {
+            top: 0;
+            left: 10px;
+        }
+
+        @keyframes miniHeartMovement {
             0% {
-                transform: scale(1) translateY(0);
+                transform: translateY(0) rotate(-45deg) scale(1);
                 opacity: 1;
             }
             100% {
-                transform: scale(0.5) translateY(-100px);
+                transform: translateY(-150px) rotate(-45deg) scale(0.5);
                 opacity: 0;
             }
         }
@@ -260,12 +271,9 @@
             }
         }, 100);
 
-        // Создание пыльцы после исчезновения сердца
-        function createDustParticles(count) {
+        // Создание маленьких сердечек после исчезновения сердца
+        function createMiniHearts(count) {
             for (let i = 0; i < count; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('dust-particle');
-                particle.style.top = `${window.innerHeight / 2 + Math.random() * 50 - 25}px`;
-                particle.style.left = `${window.innerWidth / 2 + Math.random() * 50 - 25}px`;
-                particle.style.animationDelay = `${Math.random()}s`;
-                document.body.appendChild(particle);
+                const miniHeart = document.createElement('div');
+                miniHeart.classList.add('mini-heart');
+                miniHeart.style.top = `${
